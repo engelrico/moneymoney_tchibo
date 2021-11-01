@@ -7,8 +7,6 @@
 --
 -- The MIT License (MIT)
 --
--- Copyright (c) 2012-2016 MRH applications GmbH
---
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
 -- in the Software without restriction, including without limitation the rights
@@ -49,7 +47,6 @@ local switch_localTest=false
 --local url_account="/Users/xxx/Library/Containers/com.moneymoney-app.retail/Data/Library/Application Support/MoneyMoney/Extensions/account.html"
 --local url_accountstatement="/Users/xxx/Library/Containers/com.moneymoney-app.retail/Data/Library/Application Support/MoneyMoney/Extensions/accountstatement.html"
 
-
 local open = io.open
 local function read_file(path)
     local file, err = open(path, "rb") -- r read mode and b binary mode
@@ -62,9 +59,6 @@ end
 -- ---------------------------------------------------------------------------------------------------------------------
 --localTestingStuff END
 -- ---------------------------------------------------------------------------------------------------------------------
-
-
-
 
 -- ---------------------------------------------------------------------------------------------------------------------
 --parseAccountNumber
@@ -98,7 +92,6 @@ function parseBalance(text)
   return tonumber(balance)
 end
 
-
 function parseHiddenSubmitLink(text)
   --dirty but works
   position=string.find(text,'Wicket.Ajax.ajax')+2
@@ -108,6 +101,7 @@ function parseHiddenSubmitLink(text)
   url_hidden=string.sub(text,position,position_end)
   return url_hidden
 end
+
 -- ---------------------------------------------------------------------------------------------------------------------
 --getHTML
 --  depending on local_test we get the html from the web or from local file
@@ -137,14 +131,10 @@ local function strToAmount(str)
     return convertedValue
 end
 
-
-
 -- ---------------------------------------------------------------------------------------------------------------------
 -- ---------------------------------------------------------------------------------------------------------------------
 -- MAIN PART - interfaces for MoneyMoney
 -- ---------------------------------------------------------------------------------------------------------------------
-
-
 function SupportsBank (protocol, bankCode)
   print("SupportsBank_tchibo")
   return protocol == ProtocolWebBanking and bankCode == "Tchibo Mein Konto"
@@ -195,11 +185,6 @@ function RefreshAccount (account, since)
   local html,html_txt=getHTML(url_accountstatement)
   url_hidden=parseHiddenSubmitLink(html_txt)
   local html,html_txt=getHTML(url_hidden)
---
-
-  --    local submitForm = html:xpath("//form[@novalidate='novalidate']");
-
-    --  local response, code, headers, status = connection:request(submitForm:submit())
 
   -- Check if the HTML table with transactions exists.
     if html:xpath("//table[@class='m-tp-table m-tp-table--raw']/tbody/tr[1]/td[1]"):length() > 0 then
@@ -216,14 +201,11 @@ function RefreshAccount (account, since)
                   local transaction = {
                     valueDate   = strToFullDate(tmpDate),
                     bookingDate = strToFullDate(tmpDate),
-                    --name        = columns:get(2):text(),
                     purpose     = columns:get(2):text(), true,
                     currency    = "EUR",
                     amount      = strToAmount(tmpAmount)
                   }
-
                  table.insert(transactions, transaction)
-
                end
             end)
 
